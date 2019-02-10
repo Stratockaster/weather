@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+
+<?php
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Commando\Command;
+use League\CLImate\CLImate;
+use Weather\Weather;
+
+$cmd = new Command();
+$cmd->option('s')
+    ->aka('service')
+    ->require(false)
+    ->setHelp('services: metaweather and oceandrivers')
+    ->describe('Weather service');
+$city = $cmd->getArgumentValues()[0] ?? '';
+$serviceName = $cmd->getFlagValues()['s'] ?? '';
+
+$weather = new Weather();
+$result = $weather->get($serviceName, $city);
+
+$climate = new CLImate();
+$climate->out($result->getTemperature());

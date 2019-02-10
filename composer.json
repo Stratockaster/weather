@@ -1,0 +1,29 @@
+{
+    "name": "stratockaster/weather",
+    "description": "Boilerplate package for creating other packages.",
+    "keywords": ["template", "composer", "package"],
+    "license": "DBAD",
+    "authors": [
+        {
+            "name": "Pavel Sushkevich",
+            "email": "sushkevichpavel@gmail.com"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=7.1",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "nategood/commando": "*",
+        "league/climate": "^3.4",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "require-dev": {
+		"phpunit/phpunit": "6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weather\\": "src/"
+        }
+    }
+}
