@@ -2,10 +2,10 @@
 
 namespace Weather\WeatherServices;
 
-use GuzzleHttp\Client;
-use Weather\AsiaWeatherResponse;
+use Weather\Responses\AsiaWeatherResponse;
+use Weather\Responses\Response;
 
-class AsiaWeather
+class AsiaWeather extends AbstractWeather implements WeatherService
 {
     private const URL = 'https://www.metaweather.com/api/location/';
 
@@ -14,22 +14,7 @@ class AsiaWeather
         'beijing' => 2151330
     ];
 
-    private $client;
-
-    public function __construct($client)
-    {
-        if ($client) {
-            $this->client = $client;
-        } else {
-            $defaultConfig = [
-                'timeout' => 2.0,
-            ];
-
-            $this->client = new Client($defaultConfig);
-        }
-    }
-
-    public function get(string $city): AsiaWeatherResponse
+    public function get(string $city): Response
     {
         if (!array_key_exists($city, $this->locations)) {
             throw new \Exception('wrong city name');
@@ -38,7 +23,10 @@ class AsiaWeather
         $url = self::URL . $this->locations[$city];
         $data = $this->client->get($url);
         $dataArray = json_decode($data->getBody()->getContents(), true);
+        $minTemp = $dataArray['consolidated_weather'][0]['min_temp'];
+        $maxTemp = $dataArray['consolidated_weather'][0]['max_temp'];
+        $temperature = ($minTemp + $maxTemp) / 2;
 
-        return AsiaWeatherResponse::createFrom($dataArray);
+        return new AsiaWeatherResponse($temperature);
     }
 }

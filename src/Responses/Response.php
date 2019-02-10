@@ -1,6 +1,6 @@
 <?php
 
-namespace Weather;
+namespace Weather\Responses;
 
 interface Response
 {

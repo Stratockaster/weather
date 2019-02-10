@@ -2,32 +2,22 @@
 
 namespace Weather;
 
-use Weather\WeatherServices\EuroWeather;
-use Weather\WeatherServices\AsiaWeather;
+use Weather\Responses\Response;
+use Weather\WeatherServices\WeatherService;
 
 class Weather
 {
-    private $servicesMap = [
-        'euroweather' => EuroWeather::class,
-        'asiaweather' => AsiaWeather::class,
-    ];
+    private $service;
 
-    public function get(string $serviceName, string $city, $client = null): Response
+    public function __construct(WeatherService $service)
     {
-        $city = mb_strtolower($city);
-        $serviceName = mb_strtolower($serviceName);
-
-        $weatherService = $this->createService($serviceName, $client);
-
-        return $weatherService->get($city);
+        $this->service = $service;
     }
 
-    private function createService(string $serviceName, $client = null)
+    public function get(string $city): Response
     {
-        if (!array_key_exists($serviceName, $this->servicesMap)) {
-            throw new \Exception('Wrong service name. Use "euroweather" or "asiaweather"');
-        }
+        $city = mb_strtolower($city);
 
-        return new $this->servicesMap[$serviceName]($client);
+        return $this->service->get($city);
     }
 }
